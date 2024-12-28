@@ -8,10 +8,7 @@ import { toast } from "sonner"
 
 import { addProduct } from "@/lib/actions/product"
 import { getErrorMessage } from "@/lib/handle-error"
-import {
-  type getCategories,
-  type getSubcategories,
-} from "@/lib/queries/product"
+import { type getCategories } from "@/lib/queries/product"
 import {
   createProductSchema,
   type CreateProductSchema,
@@ -50,18 +47,13 @@ import { Icons } from "@/components/icons"
 
 interface CreateProductFormProps {
   storeId: string
-  promises: Promise<{
-    categories: Awaited<ReturnType<typeof getCategories>>
-    subcategories: Awaited<ReturnType<typeof getSubcategories>>
-  }>
+  categories: Awaited<ReturnType<typeof getCategories>>
 }
 
 export function CreateProductForm({
   storeId,
-  promises,
+  categories,
 }: CreateProductFormProps) {
-  const { categories, subcategories } = React.use(promises)
-
   const [loading, setLoading] = React.useState(false)
   const { uploadFiles, progresses, uploadedFiles, isUploading } =
     useUploadFile("productImage")
@@ -81,7 +73,7 @@ export function CreateProductForm({
 
   function onSubmit(input: CreateProductSchema) {
     setLoading(true)
-
+    console.log(input)
     toast.promise(
       uploadFiles(input.images ?? []).then(() => {
         return addProduct({
@@ -155,18 +147,18 @@ export function CreateProductForm({
                 >
                   <FormControl>
                     <SelectTrigger className="capitalize">
-                      <SelectValue placeholder={field.value} />
+                      <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     <SelectGroup>
-                      {categories.map((option) => (
+                      {categories.map((category) => (
                         <SelectItem
-                          key={option.id}
-                          value={option.id}
+                          key={category.id}
+                          value={category.id}
                           className="capitalize"
                         >
-                          {option.name}
+                          {category.name}
                         </SelectItem>
                       ))}
                     </SelectGroup>
@@ -193,7 +185,7 @@ export function CreateProductForm({
                   </FormControl>
                   <SelectContent>
                     <SelectGroup>
-                      {subcategories.map((option) => (
+                      {categories.map((option) => (
                         <SelectItem key={option.id} value={option.id}>
                           {option.name}
                         </SelectItem>
@@ -245,35 +237,6 @@ export function CreateProductForm({
           />
         </div>
         <div className="space-y-6">
-          <FormField
-            control={form.control}
-            name="images"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Images</FormLabel>
-                <Select
-                  value={field.value?.toString()}
-                  onValueChange={field.onChange}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a subcategory" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      {subcategories.map((option) => (
-                        <SelectItem key={option.id} value={option.id}>
-                          {option.name}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={form.control}
             name="images"
