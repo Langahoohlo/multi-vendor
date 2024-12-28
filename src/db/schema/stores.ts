@@ -7,6 +7,7 @@ import {
   text,
   timestamp,
   varchar,
+  json,
 } from "drizzle-orm/pg-core"
 
 import { generateId } from "@/lib/id"
@@ -19,6 +20,7 @@ import { lifecycleDates } from "./utils"
 import { variants } from "./variants"
 
 export const storePlanEnum = pgEnum("store_plan", ["free", "standard", "pro"])
+export const storeTypeEnum = pgEnum("store_type", ["Food", "Grocery", "Alcohol", "Health", "Retail"])
 
 export const stores = pgTable("stores", {
   id: varchar("id", { length: 30 })
@@ -28,6 +30,28 @@ export const stores = pgTable("stores", {
   slug: text("slug").unique().notNull(),
   name: text("name").notNull(),
   description: text("description"),
+  logo_url: text("logo_url"),
+  profile_url: text("profile_url"),
+
+  // Add store type and cuisine
+  storeType: storeTypeEnum("store_type").notNull(),
+  cuisineTypes: json("cuisine_types").$type<string[]>(), // Optional, only for Food stores
+
+  // Opening hours as JSON
+  openingHours: json("opening_hours").$type<{
+    [key: string]: { open: string; close: string }[];
+  }>(),
+
+  // Address fields
+  address: text("address"),
+  city: varchar("city", { length: 100 }),
+  state: varchar("state", { length: 100 }),
+  postalCode: varchar("postal_code", { length: 20 }),
+  country: varchar("country", { length: 2 }),
+
+  // Contact numbers
+  phoneNumber: varchar("phone_number", { length: 20 }),
+  alternativePhoneNumber: varchar("alternative_phone_number", { length: 20 }),
 
   plan: storePlanEnum("plan").notNull().default("free"),
   planEndsAt: timestamp("ends_at"),
