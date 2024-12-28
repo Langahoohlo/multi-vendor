@@ -23,13 +23,28 @@ export async function createStore(
 ) {
   noStore()
   try {
+    // Ensure required fields are present
+    if (!input.name || !input.storeType) {
+      throw new Error("Missing required fields")
+    }
+
     const newStore = await db
       .insert(stores)
       .values({
         name: input.name,
-        description: input.description,
+        description: input.description ?? null,
         userId: input.userId,
         slug: slugify(input.name),
+        storeType: input.storeType,
+        cuisineTypes: input.cuisineTypes,
+        openingHours: input.openingHours,
+        address: input.address,
+        city: input.city,
+        state: input.state,
+        postalCode: input.postalCode,
+        country: input.country,
+        phoneNumber: input.phoneNumber,
+        alternativePhoneNumber: input.alternativePhoneNumber,
       })
       .returning({
         id: stores.id,
@@ -57,6 +72,16 @@ export async function updateStore(storeId: string, fd: FormData) {
     const input = updateStoreSchema.parse({
       name: fd.get("name"),
       description: fd.get("description"),
+      storeType: fd.get("storeType"),
+      cuisineTypes: JSON.parse(fd.get("cuisineTypes") as string),
+      openingHours: JSON.parse(fd.get("openingHours") as string),
+      address: fd.get("address"),
+      city: fd.get("city"),
+      state: fd.get("state"),
+      postalCode: fd.get("postalCode"),
+      country: fd.get("country"),
+      phoneNumber: fd.get("phoneNumber"),
+      alternativePhoneNumber: fd.get("alternativePhoneNumber"),
     })
 
     const storeWithSameName = await db.query.stores.findFirst({

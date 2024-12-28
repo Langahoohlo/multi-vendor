@@ -5,8 +5,21 @@ import { slugify } from "@/lib/utils"
 export const createStoreSchema = z
   .object({
     name: z.string().min(3).max(50),
-    description: z.string().optional(),
+    description: z.string().optional().default(""),
     slug: z.string().optional(),
+    storeType: z.enum(["Food", "Grocery", "Alcohol", "Health", "Retail"]).default("Retail"),
+    cuisineTypes: z.array(z.string()).optional().default([]),
+    openingHours: z.record(z.array(z.object({
+      open: z.string(),
+      close: z.string()
+    }))).optional().default({}),
+    address: z.string().optional().default(""),
+    city: z.string().optional().default(""),
+    state: z.string().optional().default(""),
+    postalCode: z.string().optional().default(""),
+    country: z.string().optional().default(""),
+    phoneNumber: z.string().optional().default(""),
+    alternativePhoneNumber: z.string().optional().default(""),
   })
   .refine((data) => {
     if (!data.slug) {
@@ -38,6 +51,19 @@ export const getStoresSchema = z.object({
 export const updateStoreSchema = z.object({
   name: z.string().min(3).max(50),
   description: z.string().optional(),
+  storeType: z.enum(["Food", "Grocery", "Alcohol", "Health", "Retail"]).optional(),
+  cuisineTypes: z.array(z.string()).optional(),
+  openingHours: z.record(z.array(z.object({
+    open: z.string(),
+    close: z.string()
+  }))).optional(),
+  address: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  postalCode: z.string().optional(),
+  country: z.string().optional(),
+  phoneNumber: z.string().optional(),
+  alternativePhoneNumber: z.string().optional(),
 })
 
 export type CreateStoreSchema = z.infer<typeof createStoreSchema>

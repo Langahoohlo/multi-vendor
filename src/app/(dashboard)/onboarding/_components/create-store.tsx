@@ -32,10 +32,24 @@ export function CreateStore({ userId }: CreateStoreProps) {
     defaultValues: {
       name: "",
       description: "",
+      storeType: "Retail", // Default store type
+      address: "",
+      city: "",
+      state: "",
+      postalCode: "",
+      country: "",
+      phoneNumber: "",
+      alternativePhoneNumber: "",
     },
   })
 
   function onSubmit(input: CreateStoreSchema) {
+    // Additional validation before submission
+    if (!input.name || !input.storeType) {
+      toast.error("Please fill in all required fields")
+      return
+    }
+
     startCreateTransaction(async () => {
       const { data, error } = await createStore({ ...input, userId })
 
