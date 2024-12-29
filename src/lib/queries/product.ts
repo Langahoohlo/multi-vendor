@@ -52,8 +52,6 @@ export async function getFeaturedProducts() {
 
 // See the unstable_noStore API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_noStore
 export async function getProducts(input: SearchParams) {
-  noStore()
-
   try {
     const search = getProductsSchema.parse(input)
 
@@ -148,10 +146,40 @@ export async function getProducts(input: SearchParams) {
 
     return transaction
   } catch (err) {
+    console.error("Error fetching products:", err)
     return {
       data: [],
       pageCount: 0,
     }
+  }
+}
+
+export async function getAllProducts() {
+  try {
+    const data = await db
+      .select({
+        id: products.id,
+        name: products.name,
+        description: products.description,
+        images: products.images,
+        category: categories.name,
+        subcategory: subcategories.name,
+        price: products.price,
+        inventory: products.inventory,
+        rating: products.rating,
+        storeId: products.storeId,
+        stripeAccountId: stores.stripeAccountId,
+      })
+      .from(products)
+      .leftJoin(stores, eq(products.storeId, stores.id))
+      .leftJoin(categories, eq(products.categoryId, categories.id))
+      .leftJoin(subcategories, eq(products.subcategoryId, subcategories.id))
+      .orderBy(desc(products.createdAt))
+
+    return data
+  } catch (err) {
+    console.error("Error fetching all products:", err)
+    return []
   }
 }
 

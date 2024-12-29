@@ -17,7 +17,7 @@ export function formatPrice(
 ) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: opts.currency ?? "USD",
+    currency: opts.currency ?? "LSL",
     notation: opts.notation ?? "compact",
     ...opts,
   }).format(Number(price))

@@ -43,7 +43,7 @@ export default async function CategoryPage({
           {`Buy ${category} from the best stores`}
         </PageHeaderDescription>
       </PageHeader>
-      <AlertCard />
+      {/* <AlertCard /> */}
     </Shell>
   )
 }
