@@ -1,7 +1,9 @@
 import * as React from "react"
 import { type Metadata } from "next"
 import { unstable_noStore as noStore } from "next/cache"
+import Link from "next/link"
 import { notFound } from "next/navigation"
+import { PlusIcon } from "@radix-ui/react-icons"
 import { db } from "@/db"
 import { categories, products, stores, type Product } from "@/db/schema"
 import { env } from "@/env.js"
@@ -12,6 +14,7 @@ import { storesProductsSearchParamsSchema } from "@/lib/validations/params"
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
 import { ProductsTable } from "@/components/tables/products-table"
+import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -153,11 +156,19 @@ export default async function ProductsPage({
     <div className="space-y-6">
       <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
         <h2 className="text-2xl font-bold tracking-tight">Products</h2>
-        <DateRangePicker align="end" />
+        <div className="flex items-center gap-2">
+          <DateRangePicker align="end" />
+          <Link href={`/store/${storeId}/products/new`}>
+            <Button>
+              <PlusIcon className="mr-2 h-4 w-4" />
+              New Product
+            </Button>
+          </Link>
+        </div>
       </div>
-      {/* <React.Suspense fallback={<DataTableSkeleton columnCount={6} />}>
+      <React.Suspense fallback={<DataTableSkeleton columnCount={6} />}>
         <ProductsTable promise={productsPromise} storeId={storeId} />
-      </React.Suspense> */}
+      </React.Suspense>
     </div>
   )
 }

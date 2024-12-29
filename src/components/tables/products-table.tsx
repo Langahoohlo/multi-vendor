@@ -9,7 +9,6 @@ import { toast } from "sonner"
 
 import { deleteProduct } from "@/lib/actions/product"
 import { getErrorMessage } from "@/lib/handle-error"
-import { type getCategories } from "@/lib/queries/product"
 import { formatDate, formatPrice } from "@/lib/utils"
 import { useDataTable } from "@/hooks/use-data-table"
 import { Badge } from "@/components/ui/badge"
@@ -33,26 +32,20 @@ type AwaitedProduct = Pick<
 
 interface ProductsTableProps {
   promise: Promise<{
-    data: AwaitedProduct[]
+    data: (AwaitedProduct & { category: string | null })[]
     pageCount: number
   }>
-  categoriesPromise: ReturnType<typeof getCategories>
   storeId: string
 }
 
-export function ProductsTable({
-  promise,
-  categoriesPromise,
-  storeId,
-}: ProductsTableProps) {
+export function ProductsTable({ promise, storeId }: ProductsTableProps) {
   const { data, pageCount } = React.use(promise)
-  const categories = React.use(categoriesPromise)
 
   const [isPending, startTransition] = React.useTransition()
   const [selectedRowIds, setSelectedRowIds] = React.useState<string[]>([])
 
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo<ColumnDef<AwaitedProduct, unknown>[]>(
+  const columns = React.useMemo<ColumnDef<typeof data[0], unknown>[]>(
     () => [
       {
         id: "select",
@@ -100,12 +93,7 @@ export function ProductsTable({
         ),
         cell: ({ cell }) => {
           const category = cell.getValue() as string
-
-          const existingCategory = categories.some(
-            (categoryData) => categoryData.name === category
-          )
-
-          if (!existingCategory) return null
+          if (!category) return null
 
           return (
             <Badge variant="outline" className="capitalize">
