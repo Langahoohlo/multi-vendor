@@ -1,3 +1,6 @@
+
+import { UtensilsCrossed } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Link from "next/link"
 
 import { siteConfig } from "@/config/site"
@@ -44,7 +47,7 @@ export async function Lobby({
 
   return (
     <Shell className="max-w-6xl gap-0">
-      <PageHeader
+      {/* <PageHeader
         as="section"
         className="mx-auto items-center gap-2 text-center"
         withPadding
@@ -92,7 +95,29 @@ export async function Lobby({
             Sell now
           </Link>
         </PageActions>
-      </PageHeader>
+      </PageHeader> */}
+
+      <div className="relative flex-col h-[600px]  flex items-center justify-center ">
+
+        <div className="flex justify-center">
+          <UtensilsCrossed className="h-16 w-16 mb-4" />
+        </div>
+        <h1 className="text-5xl md:text-6xl font-bold text-center">
+          LocalBites, Delivered Fresh
+        </h1>
+        <p className="text-xl md:text-2xl max-w-2xl mx-auto text-center">
+          Support your local restaurants and get delicious meals delivered right to your door
+        </p>
+        <div className="flex gap-4 justify-center mt-8">
+          <Button size="lg" variant="secondary">
+            Order Now
+          </Button>
+          <Button size="lg" variant="outline">
+            Join as Restaurant
+          </Button>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+      </div>
       <section
         className="grid animate-fade-up grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-4"
         style={{ animationDelay: "0.50s", animationFillMode: "both" }}

@@ -32,7 +32,7 @@ export function MainNav({ items }: MainNavProps) {
         <span className="sr-only">Home</span>
       </Link>
       <NavigationMenu>
-        <NavigationMenuList>
+        {/* <NavigationMenuList>
           {items?.[0]?.items ? (
             <NavigationMenuItem>
               <NavigationMenuTrigger className="h-auto">
@@ -106,7 +106,7 @@ export function MainNav({ items }: MainNavProps) {
                 )
               )
             )}
-        </NavigationMenuList>
+        </NavigationMenuList> */}
       </NavigationMenu>
     </div>
   )
